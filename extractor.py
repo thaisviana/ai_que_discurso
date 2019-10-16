@@ -18,10 +18,32 @@ class SpeechContent:
         return f"{self.title}"
 
 
+def clean_paragraph(p):
+    import re
+    text = re.sub(r'[0-9]', '',  p.get_text().replace('\xa0', ''))
+    text = re.sub(r'alguém', '',  text)
+    text = re.sub(r'algumas', '', text)
+    text = re.sub(r'algo', '',  text)
+    text = re.sub(r'alguns', '', text)
+    text = re.sub(r'afinal', '',  text)
+    text = re.sub(r'alguma', '', text)
+    text = re.sub(r'ali', '',  text)
+    text = re.sub(r'além', '', text)
+    text = re.sub(r'apenas', '', text)
+    text = re.sub(r'assim', '', text)
+    text = re.sub(r'cada ', '', text)
+    text = re.sub(r'ainda', '', text)
+    text = re.sub(r'antes', '', text)
+    text = re.sub(r'acima', '', text)
+    text = re.sub(r'agora', '', text)
+    return text
+
+
 def get_speech_content(speech):
+
     response = requests.get(speech.href)
     soup = BeautifulSoup(response.text, 'html.parser')
-    paragraphs = list(map(lambda p: p.get_text().replace('\xa0', ''), soup.find_all('p')))
+    paragraphs = list(map(lambda p: clean_paragraph(p), soup.find_all('p')))
     speech.content = " ".join(paragraphs)
     return speech
 
